@@ -79,9 +79,14 @@ class GameSpec extends FlatSpec with Matchers {
     val validGame = Grid(
         Row(Bomb,   Bomb,       Number(1)),
         Row(Bomb,   Number(3),  Empty),
-        Row(Bomb,   Number(2),  Empty),
-      )
+        Row(Bomb,   Number(2),  Empty))
 
     validGame.isValid shouldBe true
+  }
+
+  it should "detect invalid games" in {
+    val invalidGame = Grid(Row(Bomb, Bomb, Bomb, Bomb, Bomb)) // oh boy
+
+    invalidGame.isValid shouldBe false
   }
 }

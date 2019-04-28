@@ -63,6 +63,9 @@ case class Grid(rows: Row*) {
   }
 
   def isValid = {
+    //actually incomplete check but good enough
+    //the only thing that could possibly go wrong
+    //is having bombs with no numbers adjacent to them
     this.equals(Grid(Row(Bomb))) || bombs.forall(hasAnAdjacentNumber)
   }
 

@@ -13,7 +13,6 @@ case class Grid(bombs: Set[(Int, Int)], rows: Row*) {
   private val markedBombs = new mutable.HashSet[(Int, Int)]
   private val revealed = new mutable.HashSet[(Int, Int)]
 
-
   def markBombIn(x: Int, y: Int) = {
     markedBombs.add((x, y))
 
@@ -64,18 +63,8 @@ case class Grid(bombs: Set[(Int, Int)], rows: Row*) {
 
   private def hasAnAdjacentNumber(bombPos: (Int, Int)) = bombPos match {
     case (x, y) => {
-      val directions = List(
-        (x, y - 1),
-        (x, y + 1),
-        (x + 1, y),
-        (x - 1, y),
-        (x + 1, y - 1),
-        (x + 1, y + 1),
-        (x - 1, y - 1),
-        (x - 1, y + 1),
-      )
-
-      directions
+      Directions
+        .adjacentFrom(x, y)
         .filter(isInsideGrid)
         .exists({ case (x, y) => rows(y)(x).isInstanceOf[Number] })
     }
@@ -88,14 +77,8 @@ case class Grid(bombs: Set[(Int, Int)], rows: Row*) {
   private def revealAreaFrom(x: Int, y: Int): Unit = {
     reveal(x, y) // function is always called on an Empty first
 
-    val directions = List(
-      (x, y - 1), // up
-      (x, y + 1), // down
-      (x - 1, y), // left
-      (x + 1, y)  // right
-    )
-
-    directions
+    Directions
+      .upDownLeftRight(x, y)
       .filter(isInsideGrid) // should be inside grid
       .filter(!revealed.contains(_)) // shouldnt have been revealed
       .foreach({ case (x, y) =>

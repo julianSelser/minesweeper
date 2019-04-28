@@ -21,28 +21,13 @@ case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
       generate(maxAttempts, count + 1)
   }
 
-  private def getAdjacent(p: (Int, Int), bombs: Set[(Int, Int)]) = p match {
-    case (x, y) =>
-      val directions = List(
-        (x, y - 1),
-        (x, y + 1),
-        (x + 1, y),
-        (x - 1, y),
-        (x + 1, y - 1),
-        (x + 1, y + 1),
-        (x - 1, y - 1),
-        (x - 1, y + 1))
-
-      directions.filter(bombs.contains)
-  }
-
   private def generateGrid(bombs: Set[(Int, Int)]): List[Row] = {
     Range(0, height).toList.map(y => {
       Range(0, width).toList.map(x => {
         if (bombs.contains(x, y))
           Bomb
         else {
-          val adjacentBombs: List[(Int, Int)] = getAdjacent((x, y), bombs)
+          val adjacentBombs = Directions.adjacentFrom((x, y), bombs)
 
           if (adjacentBombs.length > 0)
             Number(adjacentBombs.length)

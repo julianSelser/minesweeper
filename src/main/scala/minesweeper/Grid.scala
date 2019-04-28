@@ -7,6 +7,7 @@ import scala.collection.mutable
 case class Grid(bombs: Set[(Int, Int)], rows: Seq[Row], revealed: mutable.HashSet[(Int, Int)] = new mutable.HashSet[(Int, Int)]) {
   val width = rows(0).length
   val height = rows.length
+  val started = System.currentTimeMillis
 
   var state: GameState = OnGoing
 

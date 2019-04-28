@@ -16,7 +16,7 @@ case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
     if (grid.isValid)
       grid
     else if(count >= maxAttempts)
-      throw new RuntimeException("Maximum attempts at generating grid reached")
+      throw new CantGenerateGridException(RandomGridGenerator(width, height))
     else
       generate(maxAttempts, count + 1)
   }
@@ -77,4 +77,8 @@ object RandomGridGenerator {
 
     RandomGridGenerator(width, height, nBombs)
   }
+}
+
+case class CantGenerateGridException(saneGenerator: RandomGridGenerator) extends Throwable {
+  def getSaneGrid = saneGenerator.generate()
 }

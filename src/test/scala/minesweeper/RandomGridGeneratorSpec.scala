@@ -3,20 +3,34 @@ package minesweeper
 import org.scalatest.{FlatSpec, Matchers}
 import Grid.Row
 
+import scala.util.Try
+
 class RandomGridGeneratorSpec extends FlatSpec with Matchers {
   "RandomGridGenerator" should "always generate a grid with a single bomb for 1x1" in {
     RandomGridGenerator(1, 1).generate() shouldBe Grid(Row(Bomb))
   }
 
   it should "throw when you want more bombs than the cells available (except 1x1 because I like it!)" in {
-    a [RuntimeException] should be thrownBy {
+    a [CantGenerateGridException] should be thrownBy {
       RandomGridGenerator(3, 3, Int.MaxValue).generate()
     }
   }
 
   it should "throw when you want bombs equal the cells available (except 1x1 because I like it!)" in {
-    a [RuntimeException] should be thrownBy {
+    a [CantGenerateGridException] should be thrownBy {
       RandomGridGenerator(3, 3, 9).generate()
+    }
+  }
+
+  it should "be possible to catch a the fact that we couldnt generate a grid and provide a sane one" in {
+    val obviouslyFailedAttempt = Try(RandomGridGenerator(3, 3, Int.MaxValue).generate())
+    val ex = obviouslyFailedAttempt.toEither.left get
+
+    obviouslyFailedAttempt.isFailure shouldBe true
+
+    ex match {
+      case ex: CantGenerateGridException => ex.getSaneGrid.isValid shouldBe true
+      case _ => fail("Grid generation should have failed with a CantGenerateGridException...")
     }
   }
 
@@ -29,7 +43,6 @@ class RandomGridGeneratorSpec extends FlatSpec with Matchers {
 
     RandomGridGenerator(3, 3, 8).generate() shouldBe validGame
   }
-
 
   it should "fill grid with n° of bombs ceiling((width*height)/3) if n° bombs not specified" in {
     val g1x1 = RandomGridGenerator(1, 1)

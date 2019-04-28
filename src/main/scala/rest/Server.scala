@@ -2,9 +2,10 @@ package rest
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import persistance.repositories.MinesweeperDB
-import rest.routes.LoginRoutes
+import rest.routes.{GameRoutes, LoginRoutes}
 
 import scala.concurrent.ExecutionContext
 
@@ -15,8 +16,8 @@ object Server extends App {
 
   MinesweeperDB.init
 
-  def route = LoginRoutes.routes
+  def routes = LoginRoutes.routes ~ GameRoutes.routes
 
-  Http().bindAndHandle(route, "0.0.0.0", 9000)
+  Http().bindAndHandle(routes, "0.0.0.0", 9000)
   println("Started server en port 9000")
 }

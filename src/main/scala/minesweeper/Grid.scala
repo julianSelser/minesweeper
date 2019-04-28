@@ -4,7 +4,7 @@ import minesweeper.Grid.Row
 
 import scala.collection.mutable
 
-case class Grid(rows: Row*) {
+case class Grid(bombs: Set[(Int, Int)], rows: Row*) {
   val width = rows(0).length
   val height = rows.length
 
@@ -13,13 +13,6 @@ case class Grid(rows: Row*) {
   private val markedBombs = new mutable.HashSet[(Int, Int)]
   private val revealed = new mutable.HashSet[(Int, Int)]
 
-  private val bombs: Set[(Int, Int)] = {
-    for {
-      (row, x) <- rows.view.zipWithIndex
-      (elem, y) <- row.view.zipWithIndex
-      if (elem equals Bomb)
-    } yield (x, y)
-  }.toSet
 
   def markBombIn(x: Int, y: Int) = {
     markedBombs.add((x, y))
@@ -123,7 +116,17 @@ object Grid {
 
   def Row(gridElement: GridElement*): Row = gridElement.toList
 
-  def apply(width: Int, height: Int): Grid = {
-    RandomGridGenerator(width, height).generate()
+  def apply(rows: Row*): Grid = {
+    val bombs: Set[(Int, Int)] = {
+      for {
+        (row, x) <- rows.view.zipWithIndex
+        (elem, y) <- row.view.zipWithIndex
+        if (elem equals Bomb)
+      } yield (x, y)
+    }.toSet
+
+    Grid(bombs, rows:_*)
   }
+
+  def apply(width: Int, height: Int): Grid = RandomGridGenerator(width, height).generate()
 }

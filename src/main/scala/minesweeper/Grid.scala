@@ -29,14 +29,15 @@ case class Grid(rows: Row*) {
   }
 
   def sweep(x: Int, y: Int): Unit = {
-    //if the point is marked for bomb we dont sweep it
+    //if the point was marked as a bomb
+    //by the user we never sweep it
     if (markedBombs.contains((x, y))) return
 
     rows(y)(x) match {
-      case Bomb => reveal(x, y); state = Lost
-      case Empty => revealAreaFrom(x, y)
-      case Number(_) => reveal(x, y)
-      case _ => throw new RuntimeException("???")
+      case Number(_)  => reveal(x, y)
+      case Bomb       => reveal(x, y); state = Lost
+      case Empty      => revealAreaFrom(x, y)
+      case _ => throw new RuntimeException("THIS SHOULD NEVER HAPPEN")
     }
   }
 
@@ -46,12 +47,12 @@ case class Grid(rows: Row*) {
       val y = rowAndIndex._2
 
       row.view.zipWithIndex.map(elemAndIndex => {
-        val elm = elemAndIndex._1
+        val gridElement = elemAndIndex._1
         val x = elemAndIndex._2
 
         if (revealed.contains(x, y))
-          elm
-        else if(markedBombs.contains(x, y))
+          gridElement
+        else if (markedBombs.contains(x, y))
           MarkedBomb
         else
           Hidden
@@ -59,6 +60,29 @@ case class Grid(rows: Row*) {
     }).toList
 
     Grid(revealedItems: _*)
+  }
+
+  def isValid = {
+    this.equals(Grid(Row(Bomb))) || bombs.forall(hasAnAdjacentNumber)
+  }
+
+  private def hasAnAdjacentNumber(bombPos: (Int, Int)) = bombPos match {
+    case (x, y) => {
+      val directions = List(
+        (x, y - 1),
+        (x, y + 1),
+        (x + 1, y),
+        (x - 1, y),
+        (x + 1, y - 1),
+        (x + 1, y + 1),
+        (x - 1, y - 1),
+        (x - 1, y + 1),
+      )
+
+      directions
+        .filter(isInsideGrid)
+        .exists({ case (x, y) => rows(y)(x).isInstanceOf[Number] })
+    }
   }
 
   private def reveal(x: Int, y: Int): Unit = {
@@ -76,16 +100,14 @@ case class Grid(rows: Row*) {
     )
 
     directions
-      .filter(isInsideGrid)           // should be inside grid
-      .filter(!revealed.contains(_))  // shouldnt have been revealed
-      .foreach(_ match {
-        case (x, y) => {
+      .filter(isInsideGrid) // should be inside grid
+      .filter(!revealed.contains(_)) // shouldnt have been revealed
+      .foreach({ case (x, y) =>
           if (rows(y)(x) equals Empty)
             revealAreaFrom(x, y)
           else
             reveal(x, y)
-        }
-    })
+      })
   }
 
   private def isInsideGrid(point: (Int, Int)) = point match {

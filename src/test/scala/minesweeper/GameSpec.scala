@@ -42,7 +42,7 @@ class GameSpec extends FlatSpec with Matchers {
     game.state shouldBe Won
   }
 
-  it should "should ignore a sweep on a cell marked as a bomb" in {
+  it should "ignore a sweep on a cell marked as a bomb" in {
     val game = Grid(
           Row(Number(2), Bomb),
           Row(Bomb, Number(2)))
@@ -53,13 +53,13 @@ class GameSpec extends FlatSpec with Matchers {
     game.state shouldBe OnGoing
   }
 
-  it should "should all cells as hidden if the game just started" in {
+  it should "all cells as hidden if the game just started" in {
     val game = Grid(1, 1)
 
     game.getRevealed shouldBe Grid(Row(Hidden))
   }
 
-  it should "should reveal a cell that was clicked (sweeped)" in {
+  it should "reveal a cell that was clicked (sweeped)" in {
     val game = Grid(Row(Number(1), Bomb))
 
     game.sweep(0, 0)
@@ -67,11 +67,21 @@ class GameSpec extends FlatSpec with Matchers {
     game.getRevealed shouldBe Grid(Row(Number(1), Hidden))
   }
 
-  it should "should show marked bombs in game grid" in {
+  it should "show marked bombs in game grid" in {
     val game = Grid(Row(Bomb))
 
     game.markBombIn(0, 0)
 
     game.getRevealed shouldBe Grid(Row(MarkedBomb))
+  }
+
+  it should "tell me if its valid (can reach all bombs)" in {
+    val validGame = Grid(
+        Row(Bomb,   Bomb,       Number(1)),
+        Row(Bomb,   Number(3),  Empty),
+        Row(Bomb,   Number(2),  Empty),
+      )
+
+    validGame.isValid shouldBe true
   }
 }

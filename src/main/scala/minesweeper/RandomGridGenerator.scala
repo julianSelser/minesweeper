@@ -10,8 +10,8 @@ case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
 
   @tailrec final def generate(maxAttempts: Int = 500, count: Int = 0): Grid = {
     val bombs = generateBombs
-    val rows = generateGrid(bombs)
-    val grid = Grid(bombs, rows: _*)
+    val rows = generateRows(bombs)
+    val grid = Grid(bombs, rows)
 
     if (grid.isValid)
       grid
@@ -21,7 +21,7 @@ case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
       generate(maxAttempts, count + 1)
   }
 
-  private def generateGrid(bombs: Set[(Int, Int)]): List[Row] = {
+  private def generateRows(bombs: Set[(Int, Int)]): List[Row] = {
     Range(0, height).toList.map(y => {
       Range(0, width).toList.map(x => {
         if (bombs.contains(x, y))

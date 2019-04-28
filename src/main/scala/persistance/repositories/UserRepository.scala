@@ -8,6 +8,13 @@ object UserRepository extends MinesweeperDB {
       .updateAndReturnGeneratedKey.apply()
   }
 
+  def passwordFor(username: String): Option[(Long, String)] = {
+    sql"select id, password from users where username=${username}"
+      .map(rs => (rs.long("id"), rs.string("password")))
+      .single()
+      .apply()
+  }
+
   def exists(username: String, password: String): Option[Long] = {
     sql"select id from users where username=${username} and password=${password}"
       .map(_.long("id"))

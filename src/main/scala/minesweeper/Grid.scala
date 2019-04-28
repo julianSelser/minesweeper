@@ -124,6 +124,6 @@ object Grid {
   def Row(gridElement: GridElement*): Row = gridElement.toList
 
   def apply(width: Int, height: Int): Grid = {
-    RandomGridGenerator(width, height).generate
+    RandomGridGenerator(width, height).generate()
   }
 }

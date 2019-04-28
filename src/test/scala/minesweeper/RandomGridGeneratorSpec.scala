@@ -5,7 +5,7 @@ import Grid.Row
 
 class RandomGridGeneratorSpec extends FlatSpec with Matchers {
   "RandomGridGenerator" should "always generate a grid with a single bomb for 1x1" in {
-    RandomGridGenerator(1, 1).generate shouldBe Grid(Row(Bomb))
+    RandomGridGenerator(1, 1).generate() shouldBe Grid(Row(Bomb))
   }
 
   it should "generate a 3x3 even when n° specified is 8 (out of nine)" in {
@@ -15,7 +15,7 @@ class RandomGridGeneratorSpec extends FlatSpec with Matchers {
       Row(Bomb,     Bomb,       Bomb)
     )
 
-    RandomGridGenerator(3, 3, 8).generate shouldBe validGame
+    RandomGridGenerator(3, 3, 8).generate() shouldBe validGame
   }
 
   it should "fill grid with n° of bombs ceiling((width*height)/3) if n° bombs not specified" in {

@@ -6,14 +6,8 @@ import scala.annotation.tailrec
 import scala.util.Random
 
 case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
-  def generate: Grid = {
-    if (width == 1 && height == 1)
-      Grid(Row(Bomb))
-    else
-      generateAttemptTimes(500) /* so ugly yet so nice*/
-  }
 
-  @tailrec private def generateAttemptTimes(maxAttempts: Int, count: Int = 0): Grid = {
+  @tailrec final def generate(maxAttempts: Int = 500, count: Int = 0): Grid = {
     val bombs = generateBombs
     val rows = generateGrid(bombs)
     val grid = Grid(rows: _*)
@@ -23,7 +17,7 @@ case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
     else if(count >= maxAttempts)
       throw new RuntimeException("Maximum attempts at generating grid reached")
     else
-      generateAttemptTimes(maxAttempts, count + 1)
+      generate(maxAttempts, count + 1)
   }
 
   private def getAdjacent(p: (Int, Int), bombs: Set[(Int, Int)]) = p match {

@@ -26,29 +26,25 @@ case class Grid(bombs: Set[(Int, Int)], rows: Row*) {
     if (markedBombs.contains((x, y))) return
 
     rows(y)(x) match {
-      case Number(_)  => reveal(x, y)
-      case Bomb       => reveal(x, y); state = Lost
-      case Empty      => revealAreaFrom(x, y)
+      case Number(_) => reveal(x, y)
+      case Bomb => reveal(x, y); state = Lost
+      case Empty => revealAreaFrom(x, y)
       case _ => throw new RuntimeException("THIS SHOULD NEVER HAPPEN")
     }
   }
 
   def getRevealed: Grid = {
-    val revealedItems = rows.view.zipWithIndex.map(rowAndIndex => {
-      val row = rowAndIndex._1
-      val y = rowAndIndex._2
-
-      row.view.zipWithIndex.toList.map(elemAndIndex => {
-        val gridElement = elemAndIndex._1
-        val x = elemAndIndex._2
-
-        if (revealed.contains(x, y))
-          gridElement
-        else if (markedBombs.contains(x, y))
-          MarkedBomb
-        else
-          Hidden
-      })
+    val revealedItems = rows.view.zipWithIndex.map(_ match {
+      case (row, y) =>
+        row.view.zipWithIndex.toList.map(_ match {
+          case (gridElement, x) =>
+            if (revealed.contains(x, y))
+              gridElement
+            else if (markedBombs.contains(x, y))
+              MarkedBomb
+            else
+              Hidden
+        })
     })
 
     Grid(revealedItems: _*)
@@ -82,11 +78,11 @@ case class Grid(bombs: Set[(Int, Int)], rows: Row*) {
       .filter(isInsideGrid) // should be inside grid
       .filter(!revealed.contains(_)) // shouldnt have been revealed
       .foreach({ case (x, y) =>
-          if (rows(y)(x) equals Empty)
-            revealAreaFrom(x, y)
-          else
-            reveal(x, y)
-      })
+      if (rows(y)(x) equals Empty)
+        revealAreaFrom(x, y)
+      else
+        reveal(x, y)
+    })
   }
 
   private def isInsideGrid(point: (Int, Int)) = point match {
@@ -108,7 +104,7 @@ object Grid {
       } yield (x, y)
     }.toSet
 
-    Grid(bombs, rows:_*)
+    Grid(bombs, rows: _*)
   }
 
   def apply(width: Int, height: Int): Grid = RandomGridGenerator(width, height).generate()

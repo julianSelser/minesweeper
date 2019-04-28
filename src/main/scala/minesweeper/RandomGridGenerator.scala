@@ -4,6 +4,7 @@ import minesweeper.Grid.Row
 
 import scala.annotation.tailrec
 import scala.util.Random
+import scala.math.min
 
 case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
 
@@ -63,7 +64,9 @@ case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
         positionBomb(bombs)
     }
 
-    (1 to nBombs).foldLeft(Set.empty[(Int, Int)])(
+    val numBombs = min(nBombs, width*height) //in case of Int.MaxValue
+
+    (1 to numBombs).foldLeft(Set.empty[(Int, Int)])(
       (bombs, _) => positionBomb(bombs))
   }
 }

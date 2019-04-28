@@ -99,6 +99,6 @@ object Grid {
   def Row(gridElement: GridElement*): Row = gridElement.toList
 
   def apply(width: Int, height: Int): Grid = {
-    new Grid(Row(Bomb)) //TODO: make it random
+    RandomGridGenerator(width, height).generate
   }
 }

@@ -66,4 +66,12 @@ class GameSpec extends FlatSpec with Matchers {
 
     game.getRevealed shouldBe Grid(Row(Number(1), Hidden))
   }
+
+  it should "should show marked bombs in game grid" in {
+    val game = Grid(Row(Bomb))
+
+    game.markBombIn(0, 0)
+
+    game.getRevealed shouldBe Grid(Row(MarkedBomb))
+  }
 }

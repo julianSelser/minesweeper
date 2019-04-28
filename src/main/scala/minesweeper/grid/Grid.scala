@@ -5,13 +5,13 @@ import minesweeper.grid.Grid.Row
 case class Grid(rows: Row*) {
   val width = rows(0).length
   val height = rows.length
-  val bombs: List[(Int, Int)] = {
+  val bombs: Set[(Int, Int)] = {
     for {
       (row, x) <- rows.view.zipWithIndex
       (elem, y) <- row.view.zipWithIndex
       if(elem equals Bomb)
     } yield (x, y)
-  }.toList
+  }.toSet
 }
 
 object Grid {
@@ -20,6 +20,6 @@ object Grid {
   def Row(gridElement: GridElement*): Row = gridElement.toList
 
   def apply(x: Int, y: Int): Grid = {
-    new Grid(Row(Bomb)) // creates random grid
+    new Grid(Row(Bomb))
   }
 }

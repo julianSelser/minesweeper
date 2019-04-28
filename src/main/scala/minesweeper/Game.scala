@@ -2,15 +2,21 @@ package minesweeper
 
 import minesweeper.grid.Grid
 
-import scala.collection.mutable.MutableList
+import scala.collection.mutable.HashSet
 
 case class Game(grid: Grid) {
-  val marked = new MutableList[(Int, Int)]
+  var state: GameState = OnGoing
+
   val bombs = grid.bombs
+  val markedBombs = new HashSet[(Int, Int)]
 
-  def state: GameState = Lost
+  def markBombIn(x: Int, y: Int) = {
+    markedBombs.add((x, y))
 
-  def mark(x: Int, y: Int) = {}
+    if(bombs.equals(markedBombs)) {
+      state = Won
+    }
+  }
 
   def sweep(x: Int, y: Int) = {}
 

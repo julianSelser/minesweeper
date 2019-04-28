@@ -1,4 +1,4 @@
-package persistance
+package persistance.repositories
 
 import scalikejdbc._
 

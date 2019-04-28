@@ -46,7 +46,7 @@ case class Grid(rows: Row*) {
       val row = rowAndIndex._1
       val y = rowAndIndex._2
 
-      row.view.zipWithIndex.map(elemAndIndex => {
+      row.view.zipWithIndex.toList.map(elemAndIndex => {
         val gridElement = elemAndIndex._1
         val x = elemAndIndex._2
 
@@ -56,8 +56,8 @@ case class Grid(rows: Row*) {
           MarkedBomb
         else
           Hidden
-      }).toList
-    }).toList
+      })
+    })
 
     Grid(revealedItems: _*)
   }

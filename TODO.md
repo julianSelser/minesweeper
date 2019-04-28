@@ -1,7 +1,5 @@
 ##Important
-- Finish random grid initialization
 - pass bombs as parameter to Grid
-- stop using mutable.HashMap for bombs in grid generator
 
 ##Would be nice
 - maybe make a 1x1 game invalid so as to avoid ugly checks
@@ -11,5 +9,3 @@
 
 ##To make it "cheto"
 - maybe make a React frontend
-- maybe make a Terminal frontend
-- maybe make a Desktop frontend

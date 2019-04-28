@@ -8,7 +8,17 @@ class RandomGridGeneratorSpec extends FlatSpec with Matchers {
     RandomGridGenerator(1, 1).generate shouldBe Grid(Row(Bomb))
   }
 
-  it should "always fill the grid with a number of bombs equal to a ceiling((width*height)/3)" in {
+  it should "generate a 3x3 even when n° specified is 8 (out of nine)" in {
+    val validGame = Grid(
+      Row(Bomb,     Bomb,       Bomb),
+      Row(Bomb,     Number(8),  Bomb),
+      Row(Bomb,     Bomb,       Bomb)
+    )
+
+    RandomGridGenerator(3, 3, 8).generate shouldBe validGame
+  }
+
+  it should "fill grid with n° of bombs ceiling((width*height)/3) if n° bombs not specified" in {
     val g1x1 = RandomGridGenerator(1, 1)
     val g2x1 = RandomGridGenerator(2, 1)
     val g3x1 = RandomGridGenerator(3, 1)

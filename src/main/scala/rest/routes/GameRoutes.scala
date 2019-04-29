@@ -1,10 +1,20 @@
 package rest.routes
 
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.IntNumber
-import rest.Authentication
+import minesweeper.RandomGridGenerator
+import rest.auth.Authentication
+import rest.dtos.{Game, NewGame}
+import rest.misc.GridOnlyReaderFormatter
+import spray.json.DefaultJsonProtocol
 
-object GameRoutes {
+
+object GameRoutes extends DefaultJsonProtocol with SprayJsonSupport {
+  implicit val gridFormat = GridOnlyReaderFormatter
+  implicit val gameFormat = jsonFormat3(Game)
+  implicit val newGameFormat = jsonFormat3(NewGame)
+
   def routes = authenticateBasic(realm = "user games", Authentication.dbAuth) { userId =>
     pathPrefix("games") {
       pathEnd{
@@ -12,7 +22,9 @@ object GameRoutes {
           complete("[game1, game2, game3]")
         } ~
         post {
-          complete("creates new game")
+          entity(as[NewGame]) { newGame =>
+            complete(RandomGridGenerator(newGame.width, newGame.height, newGame.mines).generate())
+          }
         }
       } ~
       pathPrefix(IntNumber) { id =>

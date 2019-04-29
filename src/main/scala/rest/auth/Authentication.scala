@@ -1,4 +1,4 @@
-package rest
+package rest.auth
 
 import akka.http.scaladsl.server.directives.Credentials
 import persistance.repositories.UserRepository

@@ -23,11 +23,7 @@ object MinesweeperDB extends MinesweeperDB {
     sql"""
       create table if not exists games (
         id serial not null primary key,
-        width int not null,
-        height int not null,
-        mines int not null,
-        status varchar not null,
-        started bigint not null,
+        json text not null,
         user_id int not null,
         foreign key (user_id) references users(id)
       )

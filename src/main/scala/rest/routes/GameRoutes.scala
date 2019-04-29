@@ -1,11 +1,14 @@
 package rest.routes
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.IntNumber
-import persistance.repositories.GameRepository.{create, getGamesByUserId}
+import persistance.repositories.GameRepository
+import persistance.repositories.GameRepository.{create, getGameById, getGamesByUserId, update}
 import rest.auth.Authentication
-import rest.dtos.{Game, NewGame}
+import rest.auth.Authentication.dbAuth
+import rest.dtos.{Game, NewGame, Spot}
 import rest.misc.GridOnlyReaderFormatter
 import spray.json.DefaultJsonProtocol
 
@@ -14,8 +17,9 @@ object GameRoutes extends DefaultJsonProtocol with SprayJsonSupport {
   implicit val gridFormat = GridOnlyReaderFormatter
   implicit val gameFormat = jsonFormat2(Game)
   implicit val newGameFormat = jsonFormat3(NewGame)
+  implicit val moveFormat = jsonFormat2(Spot)
 
-  def routes = authenticateBasic(realm = "user games", Authentication.dbAuth) { implicit userId =>
+  def routes = authenticateBasic(realm = "user games", dbAuth) { implicit userId =>
     pathPrefix("games") {
       pathEnd{
         get {
@@ -23,24 +27,43 @@ object GameRoutes extends DefaultJsonProtocol with SprayJsonSupport {
         } ~
         post {
           entity(as[NewGame]) { newGame =>
-            complete(create(newGame))
+            complete(create(newGame.grid))
           }
         }
       } ~
-      pathPrefix(IntNumber) { id =>
-        pathEnd {
-          get {
-            complete(s"gets game of id: ${id}")
-          }
-        } ~
-        path("sweep") {
-          put {
-            complete(s"sweeps ${id}")
-          }
-        } ~
-        path("mark") {
-          put {
-            complete(s"marks $id")
+      pathPrefix(IntNumber) { gameId =>
+        val maybeGame = getGameById(gameId)
+
+        validate(maybeGame.isDefined, s"Specified game doesn't exist") {
+          val game = maybeGame.get
+
+          pathEnd {
+            get {
+              complete(game)
+            }
+          } ~
+          entity(as[Spot]) { spot =>
+            validate(spot isInside game, s"x and y should be inside grid") {
+
+              path("sweep") {
+                put {
+                  game sweep spot
+
+                  update(game)
+
+                  complete(game)
+                }
+              } ~
+              path("mark") {
+                put {
+                  game mark spot
+
+                  update(game)
+
+                  complete(game)
+                }
+              }
+            }
           }
         }
       }

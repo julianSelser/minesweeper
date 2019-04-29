@@ -11,7 +11,7 @@ case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
   @tailrec final def generate(maxAttempts: Int = 500, count: Int = 0): Grid = {
     val bombs = generateBombs
     val rows = generateRows(bombs)
-    val grid = Grid(bombs, rows, started = System.currentTimeMillis)
+    val grid = Grid(bombs, rows)
 
     if (grid.isValid)
       grid

@@ -4,25 +4,32 @@ import minesweeper.Grid.Row
 
 import scala.collection.mutable
 
-case class Grid(bombs: Set[(Int, Int)], rows: Seq[Row], revealed: mutable.HashSet[(Int, Int)] = new mutable.HashSet[(Int, Int)], started: Long) {
+case class Grid(
+                 bombs: Set[(Int, Int)],
+                 rows: Seq[Row],
+                 var state: GameState = OnGoing,
+                 revealed: mutable.HashSet[(Int, Int)],
+                 markedBombs: mutable.HashSet[(Int, Int)]
+               )(val started: Long /*in here to avoid being used for equals*/) {
+
   val width = rows(0).length
   val height = rows.length
 
-  var state: GameState = OnGoing
+  def markBombIn(point: (Int, Int)): Unit = {
+    if(!state.equals(OnGoing)) return
 
-  private val markedBombs = new mutable.HashSet[(Int, Int)]
+    if(!markedBombs.contains(point))
+      markedBombs.add(point)
+    else
+      markedBombs.remove(point)
 
-  def markBombIn(x: Int, y: Int) = {
-    markedBombs.add((x, y))
-
-    if (bombs.equals(markedBombs))
-      state = Won
+    if (bombs.equals(markedBombs)) state = Won
   }
 
   def sweep(x: Int, y: Int): Unit = {
     //if the point was marked as a bomb
     //by the user we never sweep it
-    if (markedBombs.contains((x, y))) return
+    if (markedBombs.contains((x, y)) || !state.equals(OnGoing)) return
 
     rows(y)(x) match {
       case Number(_) => reveal(x, y)
@@ -56,6 +63,10 @@ case class Grid(bombs: Set[(Int, Int)], rows: Seq[Row], revealed: mutable.HashSe
     this.equals(Grid(Row(Bomb))) || bombs.forall(hasAnAdjacentNumber)
   }
 
+  def isInsideGrid(point: (Int, Int)) = point match {
+    case (x, y) => x < width && x >= 0 && y < height && y >= 0
+  }
+
   private def hasAnAdjacentNumber(bombPos: (Int, Int)) = bombPos match {
     case (x, y) => {
       Directions
@@ -65,8 +76,8 @@ case class Grid(bombs: Set[(Int, Int)], rows: Seq[Row], revealed: mutable.HashSe
     }
   }
 
-  private def reveal(x: Int, y: Int): Unit = {
-    revealed.add((x, y))
+  private def reveal(point: (Int, Int)): Unit = {
+    if(!markedBombs.contains(point)) revealed.add(point)
   }
 
   private def revealAreaFrom(x: Int, y: Int): Unit = {
@@ -77,15 +88,11 @@ case class Grid(bombs: Set[(Int, Int)], rows: Seq[Row], revealed: mutable.HashSe
       .filter(isInsideGrid) // should be inside grid
       .filter(!revealed.contains(_)) // shouldnt have been revealed
       .foreach({ case (x, y) =>
-      if (rows(y)(x) equals Empty)
-        revealAreaFrom(x, y)
-      else
-        reveal(x, y)
+        if (rows(y)(x) equals Empty)
+          revealAreaFrom(x, y)
+        else
+          reveal(x, y)
     })
-  }
-
-  private def isInsideGrid(point: (Int, Int)) = point match {
-    case (x, y) => x < width && x >= 0 && y < height && y >= 0
   }
 }
 
@@ -93,6 +100,12 @@ object Grid {
   type Row = List[GridElement]
 
   def Row(gridElement: GridElement*): Row = gridElement.toList
+
+  def apply(bombs: Set[(Int, Int)], rows: Seq[Row]): Grid = {
+    Grid(
+      bombs, rows, OnGoing, new mutable.HashSet[(Int, Int)], new mutable.HashSet[(Int, Int)]
+    )(System.currentTimeMillis())
+  }
 
   def apply(rows: Row*): Grid = {
     val bombs: Set[(Int, Int)] = {
@@ -103,7 +116,18 @@ object Grid {
       } yield (x, y)
     }.toSet
 
-    Grid(bombs, rows, started = System.currentTimeMillis())
+    Grid(bombs, rows)
+  }
+
+  def apply(
+    bombs: Set[(Int, Int)],
+    rows: Seq[Row],
+    started: Long,
+    state: GameState,
+    revealed: mutable.HashSet[(Int, Int)],
+    markedBombs: mutable.HashSet[(Int, Int)]
+  ): Grid = {
+    Grid(bombs, rows, state, revealed, markedBombs)(started)
   }
 
   def apply(width: Int, height: Int): Grid = RandomGridGenerator(width, height).generate()

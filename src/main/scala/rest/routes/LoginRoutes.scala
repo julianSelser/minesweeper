@@ -10,7 +10,7 @@ import spray.json.DefaultJsonProtocol
 import scala.util.Try
 
 object LoginRoutes extends DefaultJsonProtocol with SprayJsonSupport {
-  implicit val clientFormat = jsonFormat2(User)
+  implicit val userFormat = jsonFormat2(User)
 
   def routes =
     path("signup") {

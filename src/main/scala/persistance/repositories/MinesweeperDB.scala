@@ -27,7 +27,7 @@ object MinesweeperDB extends MinesweeperDB {
         height int not null,
         mines int not null,
         status varchar not null,
-        started datetime not null,
+        started bigint not null,
         user_id int not null,
         foreign key (user_id) references users(id)
       )

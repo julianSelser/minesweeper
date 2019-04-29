@@ -19,9 +19,9 @@ object GridToDBJsonFormatter extends RootJsonFormat[Grid] with DefaultJsonProtoc
     })
 
     JsObject(
-      "bombs" -> JsArray(grid.bombs.toVector.map(tupleFormat.write(_))),
+      "mines" -> JsArray(grid.mines.toVector.map(tupleFormat.write(_))),
       "revealed" -> JsArray(grid.revealed.toVector.map(tupleFormat.write(_))),
-      "marked" -> JsArray(grid.markedBombs.toVector.map(tupleFormat.write(_))),
+      "marked" -> JsArray(grid.markedMines.toVector.map(tupleFormat.write(_))),
       "grid" -> JsArray(jsonGrid.toVector),
       "started" -> JsNumber(grid.started),
       "state" -> JsString(grid.state.toString),
@@ -30,7 +30,7 @@ object GridToDBJsonFormatter extends RootJsonFormat[Grid] with DefaultJsonProtoc
 
   override def read(jv: JsValue): Grid = {
     //boring and ugly deserializing that could probably be better
-    val bombs = fromField[Set[(Int, Int)]](jv, "bombs")
+    val mines = fromField[Set[(Int, Int)]](jv, "mines")
     val started = fromField[Long](jv, "started")
 
     val state = fromField[String](jv, "state") match {
@@ -53,11 +53,11 @@ object GridToDBJsonFormatter extends RootJsonFormat[Grid] with DefaultJsonProtoc
       rows.map(_.toString match {
         case "Empty" => Empty
         case "Hidden" => Hidden
-        case "Bomb" => Bomb
-        case "MarkedBomb" => MarkedBomb
+        case "Mine" => Mine
+        case "MarkedMine" => MarkedMine
         case itsANumber => Number(itsANumber.toInt)
       }))
 
-    Grid(bombs, rows, started, state, revealed, marked)
+    Grid(mines, rows, started, state, revealed, marked)
   }
 }

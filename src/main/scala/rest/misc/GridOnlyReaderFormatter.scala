@@ -14,7 +14,7 @@ object GridOnlyReaderFormatter extends RootJsonFormat[Grid] {
     JsObject(
       "width" -> JsNumber(grid.width),
       "height" -> JsNumber(grid.height),
-      "mines" -> JsNumber(grid.bombs.size),
+      "mines" -> JsNumber(grid.mines.size),
       "status" -> JsString(grid.state.toString),
       "started" -> JsNumber(grid.started),
       "grid" -> JsArray(jsonGrid.toVector)

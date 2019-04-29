@@ -6,12 +6,12 @@ import scala.annotation.tailrec
 import scala.util.Random
 import scala.math.min
 
-case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
+case class RandomGridGenerator(width: Int, height: Int, nMines: Int) {
 
   @tailrec final def generate(maxAttempts: Int = 500, count: Int = 0): Grid = {
-    val bombs = generateBombs
-    val rows = generateRows(bombs)
-    val grid = Grid(bombs, rows)
+    val mines = generateMines
+    val rows = generateRows(mines)
+    val grid = Grid(mines, rows)
 
     if (grid.isValid)
       grid
@@ -21,16 +21,16 @@ case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
       generate(maxAttempts, count + 1)
   }
 
-  private def generateRows(bombs: Set[(Int, Int)]): List[Row] = {
+  private def generateRows(mines: Set[(Int, Int)]): List[Row] = {
     Range(0, height).toList.map(y => {
       Range(0, width).toList.map(x => {
-        if (bombs.contains(x, y))
-          Bomb
+        if (mines.contains(x, y))
+          Mine
         else {
-          val adjacentBombs = Directions.adjacentFrom((x, y), bombs)
+          val adjacentMines = Directions.adjacentFrom((x, y), mines)
 
-          if (adjacentBombs.length > 0)
-            Number(adjacentBombs.length)
+          if (adjacentMines.length > 0)
+            Number(adjacentMines.length)
           else
             Empty
         }
@@ -38,29 +38,29 @@ case class RandomGridGenerator(width: Int, height: Int, nBombs: Int) {
     })
   }
 
-  private def generateBombs: Set[(Int, Int)] = {
-    @tailrec def positionBomb(bombs: Set[(Int, Int)]): Set[(Int, Int)] = {
-      val xBomb = Random.nextInt(width)
-      val yBomb = Random.nextInt(height)
+  private def generateMines: Set[(Int, Int)] = {
+    @tailrec def positionMine(mines: Set[(Int, Int)]): Set[(Int, Int)] = {
+      val xMine = Random.nextInt(width)
+      val yMine = Random.nextInt(height)
 
-      if (!bombs.contains(xBomb, yBomb))
-        bombs + ((xBomb, yBomb))
+      if (!mines.contains(xMine, yMine))
+        mines + ((xMine, yMine))
       else
-        positionBomb(bombs)
+        positionMine(mines)
     }
 
-    val numBombs = min(nBombs, width*height) //in case of Int.MaxValue
+    val numMines = min(nMines, width*height) //in case of Int.MaxValue
 
-    (1 to numBombs).foldLeft(Set.empty[(Int, Int)])(
-      (bombs, _) => positionBomb(bombs))
+    (1 to numMines).foldLeft(Set.empty[(Int, Int)])(
+      (mines, _) => positionMine(mines))
   }
 }
 
 object RandomGridGenerator {
   def apply(width: Int, height: Int): RandomGridGenerator = {
-    val nBombs = ((width * height) / 3D).ceil.toInt
+    val nMines = ((width * height) / 3D).ceil.toInt
 
-    RandomGridGenerator(width, height, nBombs)
+    RandomGridGenerator(width, height, nMines)
   }
 }
 

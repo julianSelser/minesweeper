@@ -20,5 +20,5 @@ case class NewGame(width: Int, height: Int, mines: Int) {
 
 case class Game(id: Long, grid: Grid) {
   def sweep(move: Spot) = grid.sweep(move.x, move.y)
-  def mark(move: Spot) = grid.markBombIn(move.x, move.y)
+  def mark(move: Spot) = grid.markMineIn(move.x, move.y)
 }

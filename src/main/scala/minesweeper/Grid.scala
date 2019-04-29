@@ -5,35 +5,35 @@ import minesweeper.Grid.Row
 import scala.collection.mutable
 
 case class Grid(
-                 bombs: Set[(Int, Int)],
+                 mines: Set[(Int, Int)],
                  rows: Seq[Row],
                  var state: GameState = OnGoing,
                  revealed: mutable.HashSet[(Int, Int)],
-                 markedBombs: mutable.HashSet[(Int, Int)]
+                 markedMines: mutable.HashSet[(Int, Int)]
                )(val started: Long /*in here to avoid being used for equals*/) {
 
   val width = rows(0).length
   val height = rows.length
 
-  def markBombIn(point: (Int, Int)): Unit = {
+  def markMineIn(point: (Int, Int)): Unit = {
     if(!state.equals(OnGoing)) return
 
-    if(!markedBombs.contains(point))
-      markedBombs.add(point)
+    if(!markedMines.contains(point))
+      markedMines.add(point)
     else
-      markedBombs.remove(point)
+      markedMines.remove(point)
 
-    if (bombs.equals(markedBombs)) state = Won
+    if (mines.equals(markedMines)) state = Won
   }
 
   def sweep(x: Int, y: Int): Unit = {
-    //if the point was marked as a bomb
+    //if the point was marked as a mine
     //by the user we never sweep it
-    if (markedBombs.contains((x, y)) || !state.equals(OnGoing)) return
+    if (markedMines.contains((x, y)) || !state.equals(OnGoing)) return
 
     rows(y)(x) match {
       case Number(_) => reveal(x, y)
-      case Bomb => reveal(x, y); state = Lost
+      case Mine => reveal(x, y); state = Lost
       case Empty => revealAreaFrom(x, y)
       case _ => throw new RuntimeException("THIS SHOULD NEVER HAPPEN")
     }
@@ -46,8 +46,8 @@ case class Grid(
           case (gridElement, x) =>
             if (revealed.contains(x, y))
               gridElement
-            else if (markedBombs.contains(x, y))
-              MarkedBomb
+            else if (markedMines.contains(x, y))
+              MarkedMine
             else
               Hidden
         })
@@ -59,15 +59,15 @@ case class Grid(
   def isValid = {
     //actually incomplete check but good enough
     //the only thing that could possibly go wrong
-    //is having bombs with no numbers adjacent to them
-    this.equals(Grid(Row(Bomb))) || bombs.forall(hasAnAdjacentNumber)
+    //is having mines with no numbers adjacent to them
+    this.equals(Grid(Row(Mine))) || mines.forall(hasAnAdjacentNumber)
   }
 
   def isInsideGrid(point: (Int, Int)) = point match {
     case (x, y) => x < width && x >= 0 && y < height && y >= 0
   }
 
-  private def hasAnAdjacentNumber(bombPos: (Int, Int)) = bombPos match {
+  private def hasAnAdjacentNumber(minePos: (Int, Int)) = minePos match {
     case (x, y) => {
       Directions
         .adjacentFrom(x, y)
@@ -77,7 +77,7 @@ case class Grid(
   }
 
   private def reveal(point: (Int, Int)): Unit = {
-    if(!markedBombs.contains(point)) revealed.add(point)
+    if(!markedMines.contains(point)) revealed.add(point)
   }
 
   private def revealAreaFrom(x: Int, y: Int): Unit = {
@@ -101,33 +101,33 @@ object Grid {
 
   def Row(gridElement: GridElement*): Row = gridElement.toList
 
-  def apply(bombs: Set[(Int, Int)], rows: Seq[Row]): Grid = {
+  def apply(mines: Set[(Int, Int)], rows: Seq[Row]): Grid = {
     Grid(
-      bombs, rows, OnGoing, new mutable.HashSet[(Int, Int)], new mutable.HashSet[(Int, Int)]
+      mines, rows, OnGoing, new mutable.HashSet[(Int, Int)], new mutable.HashSet[(Int, Int)]
     )(System.currentTimeMillis())
   }
 
   def apply(rows: Row*): Grid = {
-    val bombs: Set[(Int, Int)] = {
+    val mines: Set[(Int, Int)] = {
       for {
         (row, x) <- rows.view.zipWithIndex
         (elem, y) <- row.view.zipWithIndex
-        if (elem equals Bomb)
+        if (elem equals Mine)
       } yield (x, y)
     }.toSet
 
-    Grid(bombs, rows)
+    Grid(mines, rows)
   }
 
   def apply(
-    bombs: Set[(Int, Int)],
+    mines: Set[(Int, Int)],
     rows: Seq[Row],
     started: Long,
     state: GameState,
     revealed: mutable.HashSet[(Int, Int)],
-    markedBombs: mutable.HashSet[(Int, Int)]
+    markedMines: mutable.HashSet[(Int, Int)]
   ): Grid = {
-    Grid(bombs, rows, state, revealed, markedBombs)(started)
+    Grid(mines, rows, state, revealed, markedMines)(started)
   }
 
   def apply(width: Int, height: Int): Grid = RandomGridGenerator(width, height).generate()

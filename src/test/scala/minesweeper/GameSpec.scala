@@ -15,14 +15,14 @@ class GameSpec extends FlatSpec with Matchers {
   }
 
   it should "know its dimentions given its rows" in {
-    val game = Grid(Row(Bomb))
+    val game = Grid(Row(Mine))
 
     (game.width, game.height) should be (1, 1)
   }
 
   it should "be able to reveal empty space" in {
     val game = Grid(
-      Row(Bomb,       Number(1),  Empty,  Number(1),  Bomb),
+      Row(Mine,       Number(1),  Empty,  Number(1),  Mine),
       Row(Number(1),  Number(1),  Empty,  Number(1),  Number(1)),
       Row(Empty,      Empty,      Empty,  Empty,      Empty))
 
@@ -34,20 +34,20 @@ class GameSpec extends FlatSpec with Matchers {
       Row(Empty,      Empty,      Empty,  Empty,      Empty))
   }
 
-  it should "be won when marked a bomb in (1, 1) in a 2x1 grid and the bomb was there" in {
-    val game = Grid(Row(Bomb, Number(1)))
+  it should "be won when marked a mine in (1, 1) in a 2x1 grid and the mine was there" in {
+    val game = Grid(Row(Mine, Number(1)))
 
-    game.markBombIn(0, 0)
+    game.markMineIn(0, 0)
 
     game.state shouldBe Won
   }
 
-  it should "ignore a sweep on a cell marked as a bomb" in {
+  it should "ignore a sweep on a cell marked as a mine" in {
     val game = Grid(
-          Row(Number(2), Bomb),
-          Row(Bomb, Number(2)))
+          Row(Number(2), Mine),
+          Row(Mine, Number(2)))
 
-    game.markBombIn(0, 0)
+    game.markMineIn(0, 0)
     game.sweep(0, 0)
 
     game.state shouldBe OnGoing
@@ -60,32 +60,32 @@ class GameSpec extends FlatSpec with Matchers {
   }
 
   it should "reveal a cell that was clicked (sweeped)" in {
-    val game = Grid(Row(Number(1), Bomb))
+    val game = Grid(Row(Number(1), Mine))
 
     game.sweep(0, 0)
 
     game.getRevealed shouldBe Grid(Row(Number(1), Hidden))
   }
 
-  it should "show marked bombs in game grid" in {
-    val game = Grid(Row(Bomb))
+  it should "show marked mines in game grid" in {
+    val game = Grid(Row(Mine))
 
-    game.markBombIn(0, 0)
+    game.markMineIn(0, 0)
 
-    game.getRevealed shouldBe Grid(Row(MarkedBomb))
+    game.getRevealed shouldBe Grid(Row(MarkedMine))
   }
 
-  it should "tell me if its valid (can reach all bombs)" in {
+  it should "tell me if its valid (can reach all mines)" in {
     val validGame = Grid(
-        Row(Bomb,   Bomb,       Number(1)),
-        Row(Bomb,   Number(3),  Empty),
-        Row(Bomb,   Number(2),  Empty))
+        Row(Mine,   Mine,       Number(1)),
+        Row(Mine,   Number(3),  Empty),
+        Row(Mine,   Number(2),  Empty))
 
     validGame.isValid shouldBe true
   }
 
   it should "detect invalid games" in {
-    val invalidGame = Grid(Row(Bomb, Bomb, Bomb, Bomb, Bomb)) // oh boy
+    val invalidGame = Grid(Row(Mine, Mine, Mine, Mine, Mine)) // oh boy
 
     invalidGame.isValid shouldBe false
   }

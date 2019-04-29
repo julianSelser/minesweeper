@@ -4,10 +4,9 @@ import minesweeper.Grid.Row
 
 import scala.collection.mutable
 
-case class Grid(bombs: Set[(Int, Int)], rows: Seq[Row], revealed: mutable.HashSet[(Int, Int)] = new mutable.HashSet[(Int, Int)]) {
+case class Grid(bombs: Set[(Int, Int)], rows: Seq[Row], revealed: mutable.HashSet[(Int, Int)] = new mutable.HashSet[(Int, Int)], started: Long) {
   val width = rows(0).length
   val height = rows.length
-  val started = System.currentTimeMillis
 
   var state: GameState = OnGoing
 
@@ -104,7 +103,7 @@ object Grid {
       } yield (x, y)
     }.toSet
 
-    Grid(bombs, rows)
+    Grid(bombs, rows, started = System.currentTimeMillis())
   }
 
   def apply(width: Int, height: Int): Grid = RandomGridGenerator(width, height).generate()

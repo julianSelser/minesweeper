@@ -1,12 +1,9 @@
 package rest.routes
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.IntNumber
-import persistance.repositories.GameRepository
-import persistance.repositories.GameRepository.{create, getGameById, getGamesByUserId, update}
-import rest.auth.Authentication
+import persistance.repositories.GameRepository.{create, getGameById, getUserGames, update}
 import rest.auth.Authentication.dbAuth
 import rest.dtos.{Game, NewGame, Spot}
 import rest.misc.GridOnlyReaderFormatter
@@ -23,11 +20,11 @@ object GameRoutes extends DefaultJsonProtocol with SprayJsonSupport {
     pathPrefix("games") {
       pathEnd{
         get {
-          complete(getGamesByUserId(userId))
+          complete(getUserGames)
         } ~
         post {
           entity(as[NewGame]) { newGame =>
-            complete(create(newGame.grid))
+            complete(create(newGame))
           }
         }
       } ~

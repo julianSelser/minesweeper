@@ -9,13 +9,15 @@ import spray.json._
 import scala.util.Try
 
 object GameRepository extends MinesweeperDB {
-  def create(grid: Grid)(implicit userId: Long): Game = {
-    val jsonString = GridToDBJsonFormatter.write(grid).toString()
+  def create(newGame: NewGame)(implicit userId: Long): Game = {
+    val gameGrid = newGame.grid
+
+    val jsonString = GridToDBJsonFormatter.write(gameGrid).toString()
 
     val gameId = sql"insert into games (json, user_id) values (${jsonString}, ${userId})"
       .updateAndReturnGeneratedKey.apply()
 
-    Game(gameId, grid)
+    Game(gameId, gameGrid)
   }
 
   def update(game: Game)(implicit userId: Long): Unit = {
@@ -28,7 +30,7 @@ object GameRepository extends MinesweeperDB {
     query.update.apply()
   }
 
-  def getGamesByUserId(userId: Long): List[Game] = {
+  def getUserGames(implicit userId: Long): List[Game] = {
     sql"select id, json, user_id from games where user_id=${userId}"
       .map(rs =>
         Game(

@@ -3,12 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Minesweeper</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Gugi" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="site/css/main.css">
+
     <script
             src="https://code.jquery.com/jquery-3.4.0.min.js"
             integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
             crossorigin="anonymous"></script>
 </head>
 <body>
-    <h2>HI</h2>
+    <div id="game">
+        <div id="grid"></div>
+        <button id="playnow">NEW GAME</button>
+        <div id="params">
+            <label>width</label><input step="1" type="number" value="3" name="quantity" min="1" max="99">
+            <label>height</label><input step="1" type="number" value="3" name="quantity" min="1" max="99">
+            <label>mines</label><input step="1" type="number" value="3" name="quantity" min="1" max="99">
+        </div>
+    </div>
+
+    <div id="login">
+        <form>
+            <label value="username"/><input type="text">
+            <label value="password"/><input type="password">
+            <button>Login</button>
+        </form>
+    </div>
+
+    <div id="signup">
+        <form>
+            <label value="username"/><input type="text">
+            <label value="password"/><input type="password">
+            <label value="retype your password"/><input type="password">
+            <button>Sign Up</button>
+        </form>
+    </div>
 </body>
 </html>

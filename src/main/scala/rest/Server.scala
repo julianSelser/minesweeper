@@ -1,23 +1,17 @@
 package rest
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.Directives._
-import akka.stream.ActorMaterializer
+import akka.http.scaladsl.server.HttpApp
 import persistance.repositories.MinesweeperDB
-import rest.routes.{GameRoutes, LoginRoutes}
+import rest.misc.CORSHandler
+import rest.routes.{GameRoutes, LoginRoutes, WebsiteRoutes}
 
-import scala.concurrent.ExecutionContext
-
-object Server extends App {
-  implicit val system: ActorSystem = ActorSystem("minesweeper")
-  implicit val executor: ExecutionContext = system.dispatcher
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
-
+object Server extends HttpApp with CORSHandler{
   MinesweeperDB.init
 
-  def routes = LoginRoutes.routes ~ GameRoutes.routes
+  def main(args: Array[String]) = startServer("0.0.0.0", 9000)
 
-  Http().bindAndHandle(routes, "0.0.0.0", 9000)
-  println("Started server en port 9000")
+  protected override def routes =
+    preflightRequestHandler ~ WebsiteRoutes.routes ~ LoginRoutes.routes ~ GameRoutes.routes
 }
+
+

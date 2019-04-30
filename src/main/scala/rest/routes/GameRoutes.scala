@@ -16,9 +16,9 @@ object GameRoutes extends DefaultJsonProtocol with SprayJsonSupport {
   implicit val newGameFormat = jsonFormat3(NewGame)
   implicit val moveFormat = jsonFormat2(Spot)
 
-  def routes = authenticateBasic(realm = "user games", dbAuth) { implicit userId =>
-    pathPrefix("games") {
-      pathEnd{
+  def routes = pathPrefix("games") {
+    authenticateBasic(realm = "user games", dbAuth) { implicit userId =>
+      pathEnd {
         get {
           complete(getUserGames)
         } ~

@@ -1,0 +1,61 @@
+* {
+    font-family: "Gugi", cursive;
+}
+
+html, body {
+    margin: 0;
+    border: 0 none;
+    padding: 0;
+    height: 100%;
+    min-height: 100%;
+}
+
+body {
+    background-color: #6f42c1c2;
+}
+
+#params {
+    text-align: center;
+    margin-top: 5px;
+}
+
+#params > input {
+    -moz-appearance:textfield;
+    margin-left: 5px;
+    border: none;
+    padding-left: 7px;
+    -webkit-appearance: none;
+    background-color: #6f42c1c2;
+}
+
+#grid{
+    min-height: 43vh;
+    margin: 0;
+    padding: 0;
+}
+
+#playnow {
+     outline: 0;
+     color: #38373a;
+     font-size: 50px;
+     height: 10vh;
+     min-width: 20vw;
+     background: #6f42c1c2;
+     border: none;
+     padding: 0px 5vw 0px 5vw;
+ }
+
+#playnow:hover {
+    background: #5a3898c2
+}
+
+#game {
+    width: fit-content;
+    //background-color: red;
+    margin: auto;
+    padding-top: 3vh;
+}
+
+#login, #signup {
+    display: none
+}

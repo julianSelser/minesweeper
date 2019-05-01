@@ -1,7 +1,6 @@
 * {
     font-family: "Gugi", cursive;
 }
-
 html, body {
     margin: 0;
     border: 0 none;
@@ -10,13 +9,16 @@ html, body {
     min-height: 100%;
 }
 
-body {
+body, .cell:hover {
     background-color: #6f42c1c2;
+}
+
+#login, #signup {
+    display: none
 }
 
 #params {
     text-align: center;
-    margin-top: 5px;
 }
 
 #params > input {
@@ -28,21 +30,17 @@ body {
     background-color: #6f42c1c2;
 }
 
-#grid{
-    min-height: 43vh;
-    margin: 0;
-    padding: 0;
-}
-
 #playnow {
-     outline: 0;
-     color: #38373a;
-     font-size: 50px;
-     height: 10vh;
-     min-width: 20vw;
-     background: #6f42c1c2;
-     border: none;
-     padding: 0px 5vw 0px 5vw;
+    cursor: pointer;
+    margin: 5px 0 5px 0;
+    outline: 0;
+    color: #38373a;
+    font-size: 50px;
+    height: 10vh;
+    min-width: 20vw;
+    background: #6f42c1c2;
+    border: none;
+    padding: 0px 5vw 0px 5vw;
  }
 
 #playnow:hover {
@@ -51,11 +49,43 @@ body {
 
 #game {
     width: fit-content;
-    //background-color: red;
     margin: auto;
     padding-top: 3vh;
 }
 
-#login, #signup {
-    display: none
+
+#grid{
+    min-height: 43vh;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+}
+
+.row {
+    flex: 1;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: stretch
+}
+
+.cell {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+.cell:hover {
+    background-color: red;
+    cursor: pointer;
+        background-color: #6f42c1c2;
+
 }

@@ -1,85 +1,77 @@
-export default class ClientLibrary {
+export function ClientLibrary (someBasePath, someConfig) {
+    let self = this;
 
-    constructor(someBasePath, someConfig) {
-        this.basePath = someBasePath
-        this.config = Object.assign({ mode: 'cors' }, someConfig)
+    this.basePath = someBasePath
+    this.config = Object.assign({ mode: 'cors' }, someConfig)
+
+    this.signup = function(aUsername, aPassword) {
+        return fetch(url("signup"), request("POST", {
+            username: aUsername, password: aPassword
+        }))
     }
 
-    url(aUrl) {
-        let base = this.basePath
-
-        return base? base + "/" + aUrl : aUrl
-    }
-
-    signup(aUsername, aPassword) {
+    this.login = function (aUsername, aPassword) {
         let body = {username: aUsername, password: aPassword}
 
-        return fetch(url("signup"), Object.assign({
-            method: "POST",
-            body: JSON.stringifiy(body)
-        }, this.config))
-    }
-
-    login(aUsername, aPassword) {
-        let self = this;
-        let body = {username: aUsername, password: aPassword}
-
-        return fetch(url("signup"), Object.assign({
-            method: "POST",
-            body: JSON.stringifiy(body)
-        }, this.config)).then(success => {
+        return fetch(url("login"), request("POST", body)).then(success => {
             self.username = aUsername
             self.password = aPassword
         })
     }
 
-    create(game) {
+    this.create = function (game) {
         let isGameValid = isInt(game.width) && isInt(game.height) && isInt(game.mines)
 
         if(!isGameValid) throw new Error("Game must contain width, height and mines number")
 
-        let headers = new Headers();
-        headers.set('Authorization', 'Basic ' + atob(username + ":" + password));
-
-        return fetch("games", Object.assign({
-             method: "POST",
-             body: JSON.stringifiy(game),
-             headers: headers
-         }, this.config))
+        return fetch("games", withAuth(request("POST", game)))
     }
 
-    getGames(gameId) {
-        let gamesUrl = isInt(gameId) ? url("games/" + gameId) : url("games")
-
-        let headers = new Headers();
-        headers.set('Authorization', 'Basic ' + atob(username + ":" + password));
-
-
-        return fetch(gamesUrl, Object.assign(
-             headers: headers
-         }, this.config))
+    this.getGames = function (gameId) {
+        return fetch(url("games", gameId), withAuth(request("GET")))
     }
 
-    mark(gameId, spot, move) {
+    this.move = function (gameId, move, spot) {
         let isSpotValid = isInt(spot.x) && isInt(spot.y)
-        let isValidMove = move == "mark" || move == ""
+        let isValidMove = move == "mark" || move == "sweep"
 
-        if(!isSpotValid || !isValidMove)
+        if(!isSpotValid || !isValidMove || !isInt(gameId))
             throw new Error("Spot should have coordinates x and y and be integers. Move is either 'mark' or 'sweep'")
 
-        let headers = new Headers();
-        headers.set('Authorization', 'Basic ' + atob(username + ":" + password));
-
-        return fetch(url("games/" + gameId + "/mark"), Object.assign({
-             method: "PUT",
-             body: JSON.stringifiy(spot),
-             headers: headers
-         }, this.config))
+        return fetch(url("games", gameId, move), withAuth(request("PUT", spot)))
     }
 
-    sweep(gameId) {}
-}
+    ////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////PRIVATE HELPER METHODS////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
 
-function isInt(value) {
-    return Number.isInteger(Number(value))
+    function isInt(value) {
+        return Number.isInteger(Number(value))
+    }
+
+    function url(parts) {
+        let arrParts = Array.prototype.slice.call(arguments) //javascript old baggage
+
+        let base = self.basePath
+        let builtUrl = arrParts.filter(el => el).join("/")
+
+        return base? base + "/" + builtUrl : builtUrl
+    }
+
+    function request(method, body){
+        let headers = new Headers();
+        headers.set('Content-Type', 'application/json')
+
+        return Object.assign(
+            { method, headers },
+            self.config,
+            body && {body: JSON.stringify(body)}
+        )
+    }
+
+    function withAuth(request) {
+        request.headers.set('Authorization', 'Basic ' + btoa(self.username + ":" + self.password))
+
+        return request;
+    }
 }

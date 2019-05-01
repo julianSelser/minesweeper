@@ -9,15 +9,14 @@ html, body {
     min-height: 100%;
 }
 
-body, .cell:hover {
-    background-color: #6f42c1c2;
-}
+body {  background-color: #6f42c1c2 }
 
 #login, #signup {
     display: none
 }
 
 #params {
+    margin-bottom: 5px;
     text-align: center;
 }
 
@@ -42,10 +41,6 @@ body, .cell:hover {
     border: none;
     padding: 0px 5vw 0px 5vw;
  }
-
-#playnow:hover {
-    background: #5a3898c2
-}
 
 #game {
     width: fit-content;
@@ -73,7 +68,17 @@ body, .cell:hover {
     align-items: stretch
 }
 
+.empty {
+    background-color: #916fcf
+}
+
 .cell {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select:none;
+    -o-user-select:none;
+    user-select:none;
+    background-color: #6f42c1c2;
     flex: 1;
     text-align: center;
     display: flex;
@@ -81,11 +86,10 @@ body, .cell:hover {
     justify-content: center;
     min-width: 20px;
     min-height: 20px;
+    border: 1.5px solid #5a3898c2;
 }
 
-.cell:hover {
-    background-color: red;
+.cell:hover, #playnow:hover {
     cursor: pointer;
-        background-color: #6f42c1c2;
-
+    background: #5a3898c2
 }

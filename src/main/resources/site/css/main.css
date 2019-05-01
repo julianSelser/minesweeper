@@ -16,10 +16,6 @@ body {
     background-color: #6f42c1c2
 }
 
-#login, #signup {
-    display: none
-}
-
 #params {
     margin-bottom: 5px;
     text-align: center;
@@ -111,8 +107,38 @@ body {
     display: block;
 }
 
+#game, #login {
+    display: none
+}
+
+#login, #signup {
+    width: 40%;
+    margin: auto;
+}
+
+.formgroup {
+    font-size: 35px;
+    margin-top: 5vh;
+}
+
+.forminput {
+    font-size: 35px;
+    width: 100%;
+    height: 10vh;
+    min-width: 20vw;
+    border: none;
+    padding: 0;
+}
+
 @media (max-width: 768px) {
     #game {
         min-width: 80vw !important
     }
+
+    #login, #signup {
+        width: 80%
+    }
 }
+
+
+

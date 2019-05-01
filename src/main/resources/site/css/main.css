@@ -1,7 +1,10 @@
 * {
+    color: #38373a;
     font-family: "Gugi", cursive;
 }
+
 html, body {
+    overflow: overlay;
     margin: 0;
     border: 0 none;
     padding: 0;
@@ -9,7 +12,9 @@ html, body {
     min-height: 100%;
 }
 
-body {  background-color: #6f42c1c2 }
+body {
+    background-color: #6f42c1c2
+}
 
 #login, #signup {
     display: none
@@ -29,11 +34,11 @@ body {  background-color: #6f42c1c2 }
     background-color: #6f42c1c2;
 }
 
-#playnow {
+.mybutton {
+    width: 100%;
     cursor: pointer;
-    margin: 5px 0 5px 0;
+    margin: 2vh 0 5px 0;
     outline: 0;
-    color: #38373a;
     font-size: 50px;
     height: 10vh;
     min-width: 20vw;
@@ -44,10 +49,10 @@ body {  background-color: #6f42c1c2 }
 
 #game {
     width: fit-content;
+    min-width: 60vw;
     margin: auto;
-    padding-top: 3vh;
+    padding-top: 2vh;
 }
-
 
 #grid{
     min-height: 43vh;
@@ -89,7 +94,25 @@ body {  background-color: #6f42c1c2 }
     border: 1.5px solid #5a3898c2;
 }
 
-.cell:hover, #playnow:hover {
+.cell:hover, .mybutton:hover {
     cursor: pointer;
     background: #5a3898c2
+}
+
+#gameslist {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+}
+
+.gameitem {
+    display: block;
+    font-size: 18px;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    #game {
+        min-width: 80vw !important
+    }
 }

@@ -6,9 +6,9 @@
 
     <title>Minesweeper</title>
 
+    <link rel="stylesheet" type="text/css" href="site/css/main.css">
     <link rel="icon" href="site/other/favicon.ico" sizes="16x16" type="image/png">
     <link href="https://fonts.googleapis.com/css?family=Gugi" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="site/css/main.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
           integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <script
@@ -56,39 +56,43 @@
 <div id="login">
     <form>
         <div class="formgroup">
-            <label >Username</label>
-            <input class="forminput" type="text">
+            <label>Username</label>
+            <input class="username forminput" type="text">
         </div>
         <div class="formgroup">
             <label>Password</label>
-            <input class="forminput" type="password">
+            <input class="password forminput" type="password">
         </div>
         <div class="formgroup">
             <button class="mybutton" type="submit">Login</button>
         </div>
-        <a href="#" class="formgroup">or signup...</a>
+        <a id="tosignup" href="#" class="formgroup">or signup...</a>
     </form>
+    <span class="errortxt">Whoops something went bad</span>
 </div>
 
 <div id="signup">
     <form>
         <div class="formgroup">
-            <label >Username</label>
-            <input class="forminput" type="text">
+            <label>Username</label>
+            <input class="username forminput" type="text">
         </div>
         <div class="formgroup">
             <label>Password</label>
-            <input class="forminput" type="password">
+            <input class="password forminput" type="password">
         </div>
         <div class="formgroup">
             <label>Confirm password</label>
-            <input class="forminput" type="password">
+            <input class="confirm forminput" type="password">
         </div>
         <div class="formgroup">
             <button class="mybutton" type="submit">Signup</button>
         </div>
     </form>
+    <span class="errortxt">Whoops something went bad</span>
 </div>
 
+<script type="module" src="site/js/client.js"></script>
+<script type="module" src="site/js/login.js"></script>
 </body>
 </html>

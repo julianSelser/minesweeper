@@ -107,7 +107,7 @@ body {
     display: block;
 }
 
-#game, #login {
+#game, #signup {
     display: none
 }
 
@@ -116,9 +116,18 @@ body {
     margin: auto;
 }
 
+#tosignup {
+    pointer: cursor
+}
+
 .formgroup {
     font-size: 35px;
     margin-top: 5vh;
+}
+
+.errortxt {
+    color: darkred;
+    display: none;
 }
 
 .forminput {

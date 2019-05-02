@@ -1,12 +1,9 @@
 import client from '/site/js/client.js'
 
-const SWEEP = "sweep"
-const MARK = "mark"
-
 $("#grid").delegate(".cell", "mouseup", (e) => {
     let gameId = Number($(e.delegateTarget).attr("data-game-id"))
     let spot = JSON.parse(unescape($(e.currentTarget).attr("data-pos")))
-    let markOrSweep = e.which == 3 ? MARK : SWEEP
+    let markOrSweep = e.which == 3 ? "mark" : "sweep"
 
     client
         .move(gameId, markOrSweep, spot)
@@ -67,7 +64,7 @@ function fillGrid(game) {
         .html(rows.join(""))
         .css("visibility", "visible")
 
-    return game;
+    detectWinCondition(game)
 }
 
 export function loadGames() {
@@ -89,7 +86,27 @@ export function loadGames() {
                     .replace("{{status}}", grid.status)
             })
         }).then(elements => {
-            if(elements.length > 0)
-                $("#gameslist").html(elements.join("")).show()
+            if(elements.length > 0){
+                let gamesHTML = elements.reverse().join("")
+                $("#gameslist").html(gamesHTML).show()
+            }
         })
+}
+
+function detectWinCondition(game) {
+    var endgameColor
+
+    if(game.grid.status == "OnGoing"){
+        $("#grid").css("box-shadow", "").css("background-color", "")
+
+        return
+    } else if(game.grid.status == "Won"){
+        endgameColor = "green"
+    } else if(game.grid.status == "Lost"){
+        endgameColor = "red"
+    }
+
+    $("#grid")
+        .css("box-shadow", "0px 0px 4px 5px " + endgameColor)
+        .css("background-color", endgameColor)
 }

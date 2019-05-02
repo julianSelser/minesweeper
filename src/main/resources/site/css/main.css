@@ -51,6 +51,7 @@ body {
 }
 
 #grid{
+    visibility: hidden;
     min-height: 43vh;
     margin: 0;
     padding: 0;
@@ -70,7 +71,8 @@ body {
 }
 
 .empty {
-    background-color: #916fcf
+    background-color: #916fcf;
+    height: 100%;
 }
 
 .cell {
@@ -96,8 +98,9 @@ body {
 }
 
 #gameslist {
+    display: none;
     align-items: stretch;
-    display: flex;
+    //display: flex;
     flex-direction: column;
 }
 

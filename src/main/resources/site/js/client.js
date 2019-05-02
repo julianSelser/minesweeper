@@ -31,14 +31,14 @@ function ClientLibrary () {
         return doFetch(url("games", gameId), withAuth(request("GET")))
     }
 
-    this.move = function (gameId, move, spot) {
+    this.move = function (gameId, markOrSweep, spot) {
         let isSpotValid = isInt(spot.x) && isInt(spot.y)
-        let isValidMove = move == "mark" || move == "sweep"
+        let isValidMove = markOrSweep == "mark" || markOrSweep == "sweep"
 
         if(!isSpotValid || !isValidMove || !isInt(gameId))
             throw new Error("Spot should have coordinates x and y and be integers. Move is either 'mark' or 'sweep'")
 
-        return doFetch(url("games", gameId, move), withAuth(request("PUT", spot)))
+        return doFetch(url("games", gameId, markOrSweep), withAuth(request("PUT", spot)))
     }
 
     this.setBasePath = function (aPath) {
@@ -54,7 +54,7 @@ function ClientLibrary () {
     ////////////////////////////////////////////////////////////////////////////////////
 
     function isInt(value) {
-        return Number.isInteger(Number(value))
+        return Number.isInteger(value)
     }
 
     function url(parts) {
@@ -70,10 +70,14 @@ function ClientLibrary () {
         //WTF fetch() sucks and doesnt reject
         //promise on bad HTTP status codes :(
         return fetch(url, config).then(response => {
+            let contentType = response.headers.get("content-type");
+
             if(!response.ok){
                 return response.text().then(error => Promise.reject(error))
-            } else{
-                return response
+            } else if (contentType && contentType.indexOf("application/json") > -1) {
+                return response.json()
+            } else {
+                return response;
             }
         })
     }

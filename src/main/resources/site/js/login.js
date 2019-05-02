@@ -1,4 +1,5 @@
 import client from '/site/js/client.js'
+import { loadGames } from '/site/js/game.js'
 
 $("#login").submit(e => {
     e.preventDefault()
@@ -10,7 +11,7 @@ $("#login").submit(e => {
         .login(username, password)
         .then(success => {
             $("#login").hide()
-            $("#game").show()
+            loadGames().then(success => $("#game").show())
         })
         .catch(error => {
             $("#login .errortxt").text(error)
@@ -37,6 +38,7 @@ $("#signup").submit(e => {
         .then(success => {
             $("#signup").hide()
             $("#login").show()
+            $("#login .username").focus()
             $("#login .errortxt").hide()
         })
         .catch(error => {

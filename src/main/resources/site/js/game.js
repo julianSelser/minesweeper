@@ -25,6 +25,32 @@ $("#gameslist").delegate(".mybutton.gameitem", "click", e => {
     client.getGames(gameId).then(fillGrid)
 })
 
+export function loadGames() {
+    return client
+        .getGames()
+        .then(games => {
+            return games.map(game => {
+                let grid = game.grid
+                let template =
+                    `<button data-id="{{gameId}}" class="mybutton gameitem">
+                        width: {{width}} height: {{height}} mines: {{mines}} status: {{status}}
+                    </button>`
+
+                return template
+                    .replace("{{gameId}}", game.id)
+                    .replace("{{width}}", grid.width)
+                    .replace("{{height}}", grid.height)
+                    .replace("{{mines}}", grid.mines)
+                    .replace("{{status}}", grid.status)
+            })
+        }).then(elements => {
+            if(elements.length > 0){
+                let gamesHTML = elements.reverse().join("")
+                $("#gameslist").html(gamesHTML).show()
+            }
+        })
+}
+
 function readGameParams() {
     let width = Number($("#width").val())
     let height = Number($("#height").val())
@@ -67,32 +93,6 @@ function fillGrid(game) {
     detectWinCondition(game)
 }
 
-export function loadGames() {
-    return client
-        .getGames()
-        .then(games => {
-            return games.map(game => {
-                let grid = game.grid
-                let template =
-                    `<button data-id="{{gameId}}" class="mybutton gameitem">
-                        width: {{width}} height: {{height}} mines: {{mines}} status: {{status}}
-                    </button>`
-
-                return template
-                    .replace("{{gameId}}", game.id)
-                    .replace("{{width}}", grid.width)
-                    .replace("{{height}}", grid.height)
-                    .replace("{{mines}}", grid.mines)
-                    .replace("{{status}}", grid.status)
-            })
-        }).then(elements => {
-            if(elements.length > 0){
-                let gamesHTML = elements.reverse().join("")
-                $("#gameslist").html(gamesHTML).show()
-            }
-        })
-}
-
 function detectWinCondition(game) {
     var endgameColor
 
@@ -105,6 +105,8 @@ function detectWinCondition(game) {
     } else if(game.grid.status == "Lost"){
         endgameColor = "red"
     }
+
+    loadGames()
 
     $("#grid")
         .css("box-shadow", "0px 0px 4px 5px " + endgameColor)

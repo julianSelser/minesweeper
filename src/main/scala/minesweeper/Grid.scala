@@ -84,7 +84,7 @@ case class Grid(
     reveal(x, y) // function is always called on an Empty first
 
     Directions
-      .upDownLeftRight(x, y)
+      .adjacentFrom(x, y)
       .filter(isInsideGrid) // should be inside grid
       .filter(!revealed.contains(_)) // shouldnt have been revealed
       .foreach({ case (x, y) =>

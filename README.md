@@ -1,8 +1,10 @@
 # Minesweeper
 
-You can play at `http://minesweeper.zapto.org`
+run it locally with `sbt run` on `localhost:9000`
 
-Or run it locally with `sbt run` on `localhost:9000`
+how to play:
+ - left click to reveal cell
+ - right click to flag cell
 
 REST API Docs: https://documenter.getpostman.com/view/7384429/S1Lr3qMm
 

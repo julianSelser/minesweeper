@@ -1,8 +1,8 @@
 # Minesweeper
 
-run it locally with `sbt run` on `localhost:9000`
+Run it locally with `sbt run` on `localhost:9000`
 
-how to play:
+How to play:
  - left click to reveal cell
  - right click to flag cell
 

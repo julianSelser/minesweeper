@@ -1,12 +1,14 @@
 # Minesweeper
 
-Run it locally with `sbt run` on `localhost:9000`
+Run it with `sbt run` and browse to `localhost:9000`
 
 How to play:
  - left click to reveal cell
  - right click to flag cell
 
 REST API Docs: https://documenter.getpostman.com/view/7384429/S1Lr3qMm
+
+![image](https://user-images.githubusercontent.com/4140960/158478427-af0f2f7b-5460-4b47-93fc-48d4a7b98001.png)
 
 ## Decisions
 
